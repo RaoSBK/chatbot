@@ -1,8 +1,7 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.repositories.base import BaseRepository
+from app.models.goal import Goal
 
-class Goal_repo:
-    def __init__(self, db: Session):
-        self.db = db
-
-    def get_by_id(self, id: int):
-        return None
+class GoalRepository(BaseRepository[Goal]):
+    def __init__(self, db: AsyncSession):
+        super().__init__(Goal, db)
