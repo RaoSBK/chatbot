@@ -1,14 +1,17 @@
-# Multi-stage production build for frontend
-FROM python:3.10-slim as builder
+# Multi-stage build for Node/NextJS frontend
+FROM node:18-alpine AS builder
 WORKDIR /app
-RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/lists/*
-COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
-
-FROM python:3.10-slim as runner
-WORKDIR /app
-COPY --from=builder /root/.local /root/.local
+COPY package.json ./
+RUN npm install --legacy-peer-deps
 COPY . .
-ENV PATH=/root/.local/bin:$PATH
-EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+RUN npm run build
+
+FROM node:18-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+EXPOSE 3000
+CMD ["npm", "start"]

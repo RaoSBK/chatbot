@@ -1,8 +1,7 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.repositories.base import BaseRepository
+from app.models.expense import Expense
 
-class Expense_repo:
-    def __init__(self, db: Session):
-        self.db = db
-
-    def get_by_id(self, id: int):
-        return None
+class ExpenseRepository(BaseRepository[Expense]):
+    def __init__(self, db: AsyncSession):
+        super().__init__(Expense, db)
