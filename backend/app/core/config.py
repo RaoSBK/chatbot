@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     ALLOWED_ORIGINS: Union[List[str], str] = ["http://localhost:3000"]
+    GEMINI_API_KEY: str = "your_gemini_api_key_here"
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod

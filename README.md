@@ -1,4 +1,4 @@
-# MoneyMindX 🧠💼
+# MoneyMindX 
 
 MoneyMindX is a next-generation AI-powered personal financial intelligence and wealth simulation platform. It blends traditional personal finance tracking (expenses, budgets, goals) with advanced machine learning engines that evaluate your financial stress score, map your financial personality DNA, and run multi-scenario wealth simulations.
 
