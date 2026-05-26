@@ -1,0 +1,38 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web_stage/
+
+# Next.js build output
+.next/
+out/
+
+# Python virtual env and cache
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ML models and pickles
+*.pkl
+*.joblib
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp

@@ -1,0 +1,7 @@
+transaction_id,user_id,date,amount,category,merchant,description
+t_01,u_101,2026-05-01,15.75,Food,Starbucks,Morning Coffee
+t_02,u_101,2026-05-02,120.00,Utilities,PowerCorp,Electricity Bill
+t_03,u_101,2026-05-03,45.50,Entertainment,Netflix,Monthly Subscription
+t_04,u_101,2026-05-04,350.00,Rent,PropertyMgmt,Apartment Rent Share
+t_05,u_101,2026-05-05,75.20,Groceries,SuperMart,Weekly Grocery Run
+t_06,u_101,2026-05-06,50.00,Transport,GasStation,Fuel Refill

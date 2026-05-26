@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: moneymindx-db
+    restart: always
+    environment:
+      POSTGRES_USER: moneymindx
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: moneymindx
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../deployment/docker/backend.Dockerfile
+    container_name: moneymindx-backend
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://moneymindx:password123@db/moneymindx
+      - JWT_SECRET=supersecretjwttokenkey123!
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  ml-engine:
+    build:
+      context: ./ml-engine
+      dockerfile: ../deployment/docker/ml-engine.Dockerfile
+    container_name: moneymindx-ml-engine
+    restart: always
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../deployment/docker/frontend.Dockerfile
+    container_name: moneymindx-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: moneymindx-nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./deployment/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  pgdata:
