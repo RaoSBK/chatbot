@@ -30,5 +30,5 @@ async def login(
 ):
     user_repo = UserRepository(db)
     auth_service = AuthService(user_repo)
-    credentials = UserLogin(username=form_data.username, password=form_data.password)
+    credentials = UserLogin(email=form_data.username, password=form_data.password)
     return await auth_service.authenticate(credentials)

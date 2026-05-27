@@ -12,9 +12,11 @@ class BaseRepository(Generic[ModelType]):
         self.db = db
 
     async def get_by_id(self, id: UUID, user_id: UUID) -> Optional[ModelType]:
+        from sqlalchemy import inspect
+        pk = inspect(self.model).primary_key[0]
         result = await self.db.execute(
             select(self.model).where(
-                self.model.id == id,
+                pk == id,
                 self.model.user_id == user_id
             )
         )

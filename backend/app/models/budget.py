@@ -1,19 +1,18 @@
 import uuid
-from datetime import datetime
-from sqlalchemy import Column, String, Numeric, Date, DateTime, ForeignKey, Uuid
+from sqlalchemy import Column, String, Numeric, ForeignKey, Uuid
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+from app.models.mixins import TimestampMixin
 
-class Budget(Base):
+class Budget(Base, TimestampMixin):
     __tablename__ = "budgets"
 
-    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
-    user_id = Column(Uuid, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    budget_id = Column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(Uuid(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     category = Column(String(100), nullable=False, index=True)
-    amount = Column(Numeric(12, 2), nullable=False)
-    start_date = Column(Date, nullable=False)
-    end_date = Column(Date, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    monthly_limit = Column(Numeric(12, 2), nullable=False)
+    current_spending = Column(Numeric(12, 2), default=0.00, nullable=False)
+    remaining_amount = Column(Numeric(12, 2), default=0.00, nullable=False)
 
     # Relationships
     user = relationship("User", back_populates="budgets")

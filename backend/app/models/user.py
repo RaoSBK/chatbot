@@ -1,18 +1,18 @@
 import uuid
-from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Uuid
+from datetime import datetime, timezone
+from sqlalchemy import Column, String, Numeric, DateTime, Uuid
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+from app.models.mixins import TimestampMixin
 
-class User(Base):
+class User(Base, TimestampMixin):
     __tablename__ = "users"
 
-    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
-    username = Column(String(100), unique=True, nullable=False, index=True)
+    id = Column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    full_name = Column(String(255), nullable=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    monthly_income = Column(Numeric(12, 2), nullable=True)
 
     # Relationships
     expenses = relationship("Expense", back_populates="user", cascade="all, delete-orphan")

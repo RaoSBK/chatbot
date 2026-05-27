@@ -3,14 +3,14 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-async def get_auth_headers(client: AsyncClient, username: str, email: str):
+async def get_auth_headers(client: AsyncClient, full_name: str, email: str):
     await client.post(
         "/api/v1/auth/register",
-        json={"username": username, "email": email, "password": "password123"}
+        json={"full_name": full_name, "email": email, "password": "password123"}
     )
     login_resp = await client.post(
         "/api/v1/auth/login",
-        data={"username": username, "password": "password123"}
+        data={"username": email, "password": "password123"}
     )
     token = login_resp.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
@@ -21,17 +21,15 @@ async def test_create_budget(client: AsyncClient):
         "/api/v1/budgets",
         json={
             "category": "Travel",
-            "amount": "500.00",
-            "start_date": "2026-06-01",
-            "end_date": "2026-06-30"
+            "monthly_limit": "500.00"
         },
         headers=headers
     )
     assert response.status_code == 201
     data = response.json()
     assert data["category"] == "Travel"
-    assert data["amount"] == "500.00"
-    assert "id" in data
+    assert data["monthly_limit"] == "500.00"
+    assert "budget_id" in data
 
 async def test_get_budgets_rls(client: AsyncClient):
     headers_u1 = await get_auth_headers(client, "user1", "user1@example.com")
@@ -40,10 +38,10 @@ async def test_get_budgets_rls(client: AsyncClient):
     # Create budget for user1
     resp_u1 = await client.post(
         "/api/v1/budgets",
-        json={"category": "Groceries", "amount": "300.00", "start_date": "2026-06-01", "end_date": "2026-06-30"},
+        json={"category": "Groceries", "monthly_limit": "300.00"},
         headers=headers_u1
     )
-    budget_u1_id = resp_u1.json()["id"]
+    budget_u1_id = resp_u1.json()["budget_id"]
 
     # User 2 gets User 1's budget directly: should fail with 404
     response_get_direct = await client.get(f"/api/v1/budgets/{budget_u1_id}", headers=headers_u2)
@@ -52,7 +50,7 @@ async def test_get_budgets_rls(client: AsyncClient):
     # User 2 tries to update User 1's budget: should fail with 404
     response_update = await client.put(
         f"/api/v1/budgets/{budget_u1_id}",
-        json={"amount": "350.00"},
+        json={"monthly_limit": "350.00"},
         headers=headers_u2
     )
     assert response_update.status_code == 404
@@ -64,11 +62,11 @@ async def test_get_budgets_rls(client: AsyncClient):
     # User 1 updates successfully
     response_update_ok = await client.put(
         f"/api/v1/budgets/{budget_u1_id}",
-        json={"amount": "400.00"},
+        json={"monthly_limit": "400.00"},
         headers=headers_u1
     )
     assert response_update_ok.status_code == 200
-    assert response_update_ok.json()["amount"] == "400.00"
+    assert response_update_ok.json()["monthly_limit"] == "400.00"
 
     # User 1 deletes successfully
     response_delete_ok = await client.delete(f"/api/v1/budgets/{budget_u1_id}", headers=headers_u1)
