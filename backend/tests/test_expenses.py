@@ -3,14 +3,14 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-async def get_auth_headers(client: AsyncClient, username: str, email: str):
+async def get_auth_headers(client: AsyncClient, full_name: str, email: str):
     await client.post(
         "/api/v1/auth/register",
-        json={"username": username, "email": email, "password": "password123"}
+        json={"full_name": full_name, "email": email, "password": "password123"}
     )
     login_resp = await client.post(
         "/api/v1/auth/login",
-        data={"username": username, "password": "password123"}
+        data={"username": email, "password": "password123"}
     )
     token = login_resp.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
@@ -20,20 +20,20 @@ async def test_create_expense(client: AsyncClient):
     response = await client.post(
         "/api/v1/expenses",
         json={
-            "amount": "45.50",
+            "amount": "50.50",
             "category": "Food",
-            "merchant": "Supermarket",
-            "description": "Weekly grocery shopping",
-            "date": "2026-05-26"
+            "payment_method": "Credit Card",
+            "description": "Lunch",
+            "transaction_date": "2026-05-27"
         },
         headers=headers
     )
     assert response.status_code == 201
     data = response.json()
-    assert data["amount"] == "45.50"
+    assert data["amount"] == "50.50"
     assert data["category"] == "Food"
-    assert data["merchant"] == "Supermarket"
-    assert "id" in data
+    assert data["payment_method"] == "Credit Card"
+    assert "expense_id" in data
 
 async def test_get_expenses_rls(client: AsyncClient):
     headers_u1 = await get_auth_headers(client, "user1", "user1@example.com")
@@ -42,15 +42,15 @@ async def test_get_expenses_rls(client: AsyncClient):
     # Create expense for user1
     resp_u1 = await client.post(
         "/api/v1/expenses",
-        json={"amount": "100.00", "category": "Rent", "date": "2026-05-01"},
+        json={"amount": "100.00", "category": "Transport", "transaction_date": "2026-05-27"},
         headers=headers_u1
     )
-    expense_u1_id = resp_u1.json()["id"]
+    expense_u1_id = resp_u1.json()["expense_id"]
 
     # Create expense for user2
     await client.post(
         "/api/v1/expenses",
-        json={"amount": "20.00", "category": "Coffee", "date": "2026-05-02"},
+        json={"amount": "20.00", "category": "Coffee", "transaction_date": "2026-05-02"},
         headers=headers_u2
     )
 

@@ -8,13 +8,6 @@ class AuthService:
         self.user_repo = user_repo
 
     async def register(self, user_in: UserRegister) -> UserResponse:
-        # Check username
-        existing_username = await self.user_repo.get_by_username(user_in.username)
-        if existing_username:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Username already registered"
-            )
         # Check email
         existing_email = await self.user_repo.get_by_email(user_in.email)
         if existing_email:
@@ -26,18 +19,18 @@ class AuthService:
         # Hash password and create
         hashed_pwd = hash_password(user_in.password)
         user = await self.user_repo.create(
-            username=user_in.username,
+            full_name=user_in.full_name,
             email=user_in.email,
             password_hash=hashed_pwd
         )
         return user
 
     async def authenticate(self, credentials: UserLogin) -> TokenResponse:
-        user = await self.user_repo.get_by_username(credentials.username)
+        user = await self.user_repo.get_by_email(credentials.email)
         if not user or not verify_password(credentials.password, user.password_hash):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect username or password",
+                detail="Incorrect email or password",
                 headers={"WWW-Authenticate": "Bearer"},
             )
 

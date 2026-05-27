@@ -8,25 +8,22 @@ class BudgetCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     category: str = Field(..., min_length=1, max_length=100)
-    amount: Decimal = Field(..., gt=0)
-    start_date: date
-    end_date: date
+    monthly_limit: Decimal = Field(..., gt=0)
 
 class BudgetUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     category: Optional[str] = Field(None, min_length=1, max_length=100)
-    amount: Optional[Decimal] = Field(None, gt=0)
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
+    monthly_limit: Optional[Decimal] = Field(None, gt=0)
 
 class BudgetResponse(BaseModel):
     model_config = ConfigDict(extra="forbid", from_attributes=True)
 
-    id: UUID
+    budget_id: UUID
     user_id: UUID
     category: str
-    amount: Decimal
-    start_date: date
-    end_date: date
+    monthly_limit: Decimal
+    current_spending: Decimal
+    remaining_amount: Decimal
     created_at: datetime
+    updated_at: datetime

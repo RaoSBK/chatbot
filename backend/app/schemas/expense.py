@@ -9,27 +9,28 @@ class ExpenseCreate(BaseModel):
 
     amount: Decimal = Field(..., gt=0)
     category: str = Field(..., min_length=1, max_length=100)
-    merchant: Optional[str] = Field(None, max_length=255)
+    payment_method: Optional[str] = Field(None, max_length=255)
     description: Optional[str] = None
-    date: date
+    transaction_date: date
 
 class ExpenseUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     amount: Optional[Decimal] = Field(None, gt=0)
     category: Optional[str] = Field(None, min_length=1, max_length=100)
-    merchant: Optional[str] = Field(None, max_length=255)
+    payment_method: Optional[str] = Field(None, max_length=255)
     description: Optional[str] = None
-    date: Optional[date] = None
+    transaction_date: Optional[date] = None
 
 class ExpenseResponse(BaseModel):
     model_config = ConfigDict(extra="forbid", from_attributes=True)
 
-    id: UUID
+    expense_id: UUID
     user_id: UUID
     amount: Decimal
     category: str
-    merchant: Optional[str] = None
+    payment_method: Optional[str] = None
     description: Optional[str] = None
-    date: date
+    transaction_date: date
     created_at: datetime
+    updated_at: datetime
