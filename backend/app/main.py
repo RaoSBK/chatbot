@@ -11,6 +11,9 @@ from app.api.v1.budgets import router as budgets_router
 from app.api.v1.goals import router as goals_router
 from app.api.recommendation import router as recommendation_router
 from app.api.investment_assistant import router as investment_router
+from app.api.personality import router as personality_router
+from app.api.stress import router as stress_router
+from app.api.patterns import router as patterns_router
 
 app = FastAPI(
     title="MoneyMind X API",
@@ -43,6 +46,9 @@ app.include_router(budgets_router, prefix="/api/v1")
 app.include_router(goals_router, prefix="/api/v1")
 app.include_router(recommendation_router, prefix="/api/v1")
 app.include_router(investment_router, prefix="/api/v1")
+app.include_router(personality_router, prefix="/api/v1")
+app.include_router(stress_router, prefix="/api/v1")
+app.include_router(patterns_router, prefix="/api/v1")
 
 @app.get("/")
 def read_root():
