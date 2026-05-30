@@ -911,7 +911,7 @@ Calculates a financial health/mental wellness score based on spending habits, vo
       "stress_category": "Moderate",
       "assessed_at": "2026-04-29T10:00:00Z"
     },
-    {
+    {z
       "assessment_id": "c1d2e3f4-a5b6-7c8d-9e0f-1a2b3c4d5e6f",
       "stress_score": 38.5,
       "stress_category": "Moderate",
