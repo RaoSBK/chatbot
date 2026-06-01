@@ -2,17 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --primary: 263.4 70% 50.4%;
-  --primary-foreground: 210 40% 98%;
-  --card: 240 10% 10%;
-  --card-foreground: 0 0% 98%;
+@layer base {
+  :root {
+    --background: 210 20% 98%; /* Clean light slate background #f8fafc */
+    --foreground: 222 47% 11.2%; /* Deep slate text #0f172a */
+    --card: 0 0% 100%; /* Pure white card background #ffffff */
+    --card-foreground: 222 47% 11.2%;
+    --border: 214.3 31.8% 91.4%; /* Soft light border #e2e8f0 */
+    
+    /* Brand Design System Colors (Optimized for light mode readability) */
+    --primary: 158 72% 35%;       /* High-contrast Mint Green #0b8057 */
+    --primary-light: 158 65% 45%; /* Mint Green #15a374 */
+    --primary-dark: 170 75% 25%;  /* Dark Teal #0f766e */
+    --warning: 38 92% 45%;        /* Readability warning orange #d97706 */
+    --danger: 354 70% 50%;        /* Readability danger red #dc2626 */
+    --ai-purple: 255 60% 55%;     /* AI Insight Purple #6d28d9 */
+    --ai-purple-light: 255 70% 95%; /* Pastel purple background for AI insight card #f5f3ff */
+    --ai-purple-dark: 255 60% 25%;  /* Deep purple text #3b0764 */
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
 }
 
-body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: 'Inter', sans-serif;
+/* Premium smooth layout changes */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Custom scrollbar styling for premium light look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 4px 20px rgba(11, 128, 87, 0.08);
+}
+.glow-ai {
+  box-shadow: 0 4px 25px rgba(109, 40, 217, 0.08);
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(109, 40, 217, 0.06);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(109, 40, 217, 0.12);
+  }
+}
+
+.animate-glow-pulse {
+  animation: pulseGlow 4s infinite ease-in-out;
 }
