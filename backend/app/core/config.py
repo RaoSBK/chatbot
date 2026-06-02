@@ -11,7 +11,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     ALLOWED_ORIGINS: Union[List[str], str] = [
+        "http://localhost",
+        "http://localhost:80",
         "http://localhost:3000",
+        "http://localhost:5173",
         "http://localhost:8000",
         "http://127.0.0.1:8000",
     ]
