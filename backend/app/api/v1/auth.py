@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, Request, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -25,10 +24,20 @@ async def register(
 @limiter.limit("10/minute")
 async def login(
     request: Request,
-    form_data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_db)
 ):
     user_repo = UserRepository(db)
     auth_service = AuthService(user_repo)
-    credentials = UserLogin(email=form_data.username, password=form_data.password)
+
+    credentials: UserLogin
+    if request.headers.get("content-type", "").lower().startswith("application/json"):
+        payload = await request.json()
+        if "email" in payload:
+            credentials = UserLogin(email=payload["email"], password=payload["password"])
+        else:
+            credentials = UserLogin(email=payload.get("username"), password=payload.get("password"))
+    else:
+        form_data = await request.form()
+        credentials = UserLogin(email=form_data.get("username"), password=form_data.get("password"))
+
     return await auth_service.authenticate(credentials)

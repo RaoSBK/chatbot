@@ -1,15 +1,14 @@
 import { api } from '../lib/api';
 
 export const authService = {
-  async getAll() {
-    return api.get('/auth');
+  async register(data: any) {
+    return api.post('/auth/register', data);
   },
-  
-  async getById(id: string) {
-    return api.get(`/auth/${id}`);
+
+  async login(credentials: { email: string; password: string }) {
+    return api.post('/auth/login', credentials);
   },
-  
   async create(data: any) {
-    return api.post('/auth', data);
+    return this.register(data);
   }
 };
